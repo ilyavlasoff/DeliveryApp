@@ -54,4 +54,8 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    public function createUser(Request $request)
+    {
+
+    }
 }
