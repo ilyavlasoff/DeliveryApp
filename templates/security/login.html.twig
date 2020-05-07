@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block stylesheets %}
+    {{ include("common.html.twig") }}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <form method="post">
+            <h1>Sign in</h1>
+            {% if error %}
+                <div class="card-panel red lighten-1">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            {#{% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}#}
+
+
+            <div class="col s12">
+                <div class="input-field col s12">
+                    <label for="inputUsername">Username</label>
+                    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" required autofocus>
+                </div>
+            </div>
+            <div class="col s12">
+                <div class="input-field col s12">
+                    <label for="inputPassword">Password</label>
+                    <input type="password" name="password" id="inputPassword" class="form-control" required>
+                </div>
+            </div>
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+            <p>
+                <label>
+                    <input type="checkbox" name="_remember_me"> <span>Remember me</span>
+                </label>
+            </p>
+            <div class="row">
+                <button class="btn-large" type="submit">Sign in</button>
+                <a href="{{ path("app_register") }}">Not registered yet?</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

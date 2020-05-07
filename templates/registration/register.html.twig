@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+{% block stylesheets %}
+    {{ include('common.html.twig') }}
+{% endblock %}
+{% block body %}
+
+
+    <div class="container">
+        <h1>Register</h1>
+        {{ form_start(registrationForm) }}
+        {% set formErrors = registrationForm.vars.errors.form.getErrors(true) %}
+        {% if formErrors|length %}
+            <div class="card-panel red lighten-1">
+                <label>Can not register due to these errors:</label>
+                <ul>
+                    {% for error in formErrors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputUsername">{{ form_label(registrationForm.username) }}</label>
+                {{ form_widget(registrationForm.username, {'attr': {'class': 'validate', 'id': 'inputUsername'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputEmail">{{ form_label(registrationForm.email) }}</label>
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'validate', 'id': 'inputEmail'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputPasswordFirst">{{ form_label(registrationForm.plainPassword.first) }}</label>
+                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'validate', 'id': 'inputPasswordFirst'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputPasswordSecond">{{ form_label(registrationForm.plainPassword.second) }}</label>
+                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'validate', 'id': 'inputPasswordSecond'}}) }}
+            </div>
+        </div>
+        <div class="row">
+            <p>
+                <label>
+                    {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'validate', 'id': 'inputPasswordSecond'}}) }}
+                    <span>
+                        Please read and accept our <a href="">terms of use</a> and <a href="">license agreement</a>
+                    </span>
+                </label>
+            </p>
+        </div>
+        <div class="row">
+            <button type="submit" class="waves-effect waves-light btn-large">Register <i class="material-icons right">send</i></button>
+            <a href="{{ path("app_login") }}">Already registered?</a>
+        </div>
+        {{ form_end(registrationForm) }}
+    </div>
+{% endblock %}
