@@ -50,7 +50,7 @@ class ReceiverFormType extends AbstractType
                 'label' => 'Passport',
                 'constraints' => [
                     new Regex([
-                        'pattern' => '/^\d{4}\s?\d{6}?/',
+                        'pattern' => '/^\d{4}\s?\d{6}?$/',
                         'message' => 'Input passport data in format 0123 456789'
                     ])
                 ]

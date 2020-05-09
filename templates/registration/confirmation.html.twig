@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create user{% endblock %}
+{% block stylesheets %}
+    {{ include("common.html.twig") }}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        {{ form_start(confirmationForm) }}
+        <div class="col s12">
+            <h1>Confirmation</h1>
+            <h4>Please, enter confirmation code we sent to your e-mail</h4>
+            {% if(errorCode) %}
+                <div class="card-panel red lighten-1">
+                    <label>You entered the wrong code. Check correctness and try again</label>
+                </div>
+            {% endif %}
+
+            {% set formErrors = confirmationForm.vars.errors.form.getErrors(true) %}
+            {% if formErrors|length %}
+                <div class="card-panel red lighten-1">
+                    <label>Can not register due to these errors:</label>
+                    <ul>
+                        {% for error in formErrors %}
+                            <li>{{ error.message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="col s12">
+                <div class="input-field col s12">
+                    <label for="confirmationCodeInput">{{ form_label(confirmationForm.code) }}</label>
+                    {{ form_widget(confirmationForm.code, {'attr': { 'class': 'validate', 'id': 'confirmationCodeInput' }}) }}
+                </div>
+                {{ form_row(confirmationForm._token) }}
+                {{ form_row(confirmationForm.submit, { 'attr': { 'class': 'waves-effect waves-light btn-large'}}) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

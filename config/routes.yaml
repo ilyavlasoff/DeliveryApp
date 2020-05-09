@@ -1,7 +1,3 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
-
 app_login:
   path: /login
   controller: App\Controller\AuthenticationController::login
@@ -11,3 +7,15 @@ app_logout:
 app_register:
   path: /register
   controller: App\Controller\RegistrationController::register
+receiver_register:
+  path: /receiver
+  controller: App\Controller\RegistrationController::createReceiver
+app_confirm:
+  path: /confirm
+  controller: App\Controller\RegistrationController::confirmRegistration
+main_page:
+  path: /
+  controller: App\Controller\MainboardController::display
+client_page:
+  path: /my
+  controller: App\Controller\ReceiverPageController::display

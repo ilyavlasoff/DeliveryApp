@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create user{% endblock %}
+{% block stylesheets %}
+    {{ include("common.html.twig") }}
+{% endblock %}
+{% block body %}
+    <div class="container">
+        <h1>Tell us about yourself</h1>
+        <h4>In order to process your orders correctly we need some information about you</h4>
+        {{ form_start(regReceiverForm) }}
+        {% set formErrors = regReceiverForm.vars.errors.form.getErrors(true) %}
+        {% if formErrors|length %}
+            <div class="card-panel red lighten-1">
+                <label>Can not register due to these errors:</label>
+                <ul>
+                    {% for error in formErrors %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputName">{{ form_label(regReceiverForm.name) }}</label>
+                {{ form_widget(regReceiverForm.name, {'attr': {'id': 'inputName', 'class': 'validate'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputSurname">{{ form_label(regReceiverForm.surname) }}</label>
+                {{ form_widget(regReceiverForm.surname, {'attr': {'id': 'inputSurname', 'class': 'validate'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputPatronymic">{{ form_label(regReceiverForm.patronymic) }}</label>
+                {{ form_widget(regReceiverForm.patronymic, {'attr': {'id': 'inputPatronymic', 'class': 'validate'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputPassport">{{ form_label(regReceiverForm.passport) }}</label>
+                {{ form_widget(regReceiverForm.passport, {'attr': {'id': 'inputPassport', 'class': 'validate'}}) }}
+            </div>
+        </div>
+        <div class="col s12">
+            <div class="input-field col s12">
+                <label for="inputPhone">{{ form_label(regReceiverForm.phone) }}</label>
+                {{ form_widget(regReceiverForm.phone, {'attr': {'id': 'inputPhone', 'class': 'validate'}}) }}
+            </div>
+        </div>
+        <button type="submit" class="waves-effect waves-light btn-large">Next</button>
+        {{ form_end(regReceiverForm) }}
+    </div>
+{% endblock %}

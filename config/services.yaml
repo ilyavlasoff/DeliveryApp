@@ -4,6 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    randomCodeLength: 6
+    #sendFromAddress: noreply@deliveryapp.com
+    sendFromAddress: defaultuser1024@mail.ru
 
 services:
     # default configuration for services in *this* file
