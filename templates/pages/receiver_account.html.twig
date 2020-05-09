@@ -1,0 +1,29 @@
+{% extends 'pageproto.html.twig' %}
+
+{% block pagecontent %}
+    <img src="{{ asset("public/media/default_user_man.png") }}" class="circle main-profile-picture" alt="User photo">
+    <h1>{{ client.getName() ~ ' ' ~ client.getSurname() }}</h1>
+    <h5 class="grey-text lighten-1">{{ app.user.getEmail() }}</h5>
+    <br>
+    <h6 class="grey-text lighten-1">Private data</h6>
+    <ul>
+        <li>Name: {{ client.getName() }}</li>
+        <li>Surname: {{ client.getSurname() }}</li>
+        {% if(client.getPatronymic()) %}
+            <li>Patronymic: {{ client.getPatronymic() }}</li>
+        {% endif %}
+        <li>Username: {{ app.user.getUsername() }}</li>
+        <li>E-mail: {{ app.user.getEmail() }}</li>
+        {% if(client.getPassport()) %}
+            <li>Passport data: {{ client.getPassport() }}</li>
+        {% else %}
+            <li>Patronymic:
+                <span class="red-text lighten-1">not stated</span><br>
+                <span class="red-text lighten-1">Some operations can be unavailable without setting a passport data</span>
+                <a href="{{ path('receiver_settings') }}">Set</a>
+            </li>
+        {% endif %}
+        <li>Phone: {{ client.getPhone() }}</li>
+    </ul>
+
+{% endblock %}

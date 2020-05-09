@@ -19,6 +19,7 @@ body {
 .contents {
     overflow-y: scroll;
     height: 100%;
+    padding: 100px !important;
 }
 .flex-row {
     display: flex;
@@ -34,4 +35,11 @@ body {
 }
 .usercard {
     margin-top: 20px;
+}
+.card-content {
+    height: 150px !important;
+    overflow-y: scroll;
+}
+.main-profile-picture {
+    height: 200px;
 }

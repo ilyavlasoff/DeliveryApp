@@ -43,6 +43,16 @@ class User implements UserInterface
      */
     private $email;
 
+    public const ADMIN = 'ROLE_ADMIN';
+    public const CLIENT = 'ROLE_CLIENT';
+    public const WAREHOUSE_EMPLOYEE = 'ROLE_STAFF';
+    public const COURIER = 'ROLE_COURIER';
+
+    public function __construct()
+    {
+        $this->roles[] = 'ROLE_USER';
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,8 +81,6 @@ class User implements UserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -82,6 +90,18 @@ class User implements UserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+
+    public function addRole(string $role): self
+    {
+        $this->roles[] = $role;
+
+        return $this;
+    }
+
+    public function checkRole(string $role): bool
+    {
+        return isset($this->roles[$role]);
     }
 
     /**

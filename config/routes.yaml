@@ -8,14 +8,29 @@ app_register:
   path: /register
   controller: App\Controller\RegistrationController::register
 receiver_register:
-  path: /receiver
+  path: /client
   controller: App\Controller\RegistrationController::createReceiver
 app_confirm:
   path: /confirm
   controller: App\Controller\RegistrationController::confirmRegistration
 main_page:
-  path: /
-  controller: App\Controller\MainboardController::display
-client_page:
+  path: /dash
+  controller: App\Controller\MainboardController::displayPage
+receiver_page:
   path: /my
-  controller: App\Controller\ReceiverPageController::display
+  controller: App\Controller\ReceiverPageController::displayPage
+receiver_deliveries:
+  path: /deliveries
+  controller: App\Controller\ReceiverDeliveriesController::displayPage
+receiver_tracking:
+  path: /tracking
+  controller: App\Controller\ReceiverTrackingController::displayPage
+receiver_payments:
+  path: /payments
+  controller: App\Controller\ReceiverPaymentsController::displayPage
+receiver_delivery:
+  path: /delivery/{id}
+  controller: App\Controller\ReceiverDeliveryInfoController::displayPage
+receiver_settings:
+  path: /settings
+  controller: App\Controller\ReceiverSettingsController::displayPage

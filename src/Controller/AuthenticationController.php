@@ -11,9 +11,10 @@ class AuthenticationController extends AbstractController
 {
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser())
+        if ($user = $this->getUser())
         {
-            return $this->redirectToRoute('target_path');
+
+            return $this->redirectToRoute('main_page');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();

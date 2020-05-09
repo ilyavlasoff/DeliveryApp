@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MainboardController extends AbstractController
+class ReceiverDeliveriesController extends AbstractController
 {
     public function displayPage()
     {
-        return $this->render('pages/dashboard.html.twig');
+
     }
 }

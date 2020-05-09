@@ -35,6 +35,11 @@ class RegistrationController extends AbstractController
                              GuardAuthenticatorHandler $guardHandler,
                              UserAuthenticator $authenticator): Response
     {
+        if ($this->getUser())
+        {
+            return $this->redirectToRoute('main_page');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -47,6 +52,7 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            $user->addRole(user::CLIENT);
 
             $this->get('session')->set('preAuthenticatedUser', $user);
 
