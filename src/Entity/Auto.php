@@ -50,6 +50,13 @@ class Auto
         return $this->number;
     }
 
+    public function setNumber($number): self
+    {
+        $this->number = $number;
+
+        return $this;
+    }
+
     public function getModel(): ?string
     {
         return $this->model;

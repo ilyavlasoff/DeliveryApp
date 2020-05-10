@@ -9,11 +9,25 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class DatabaseService
 {
-    private $em;
+    protected $em;
 
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
+    }
+
+    public function insert($entity)
+    {
+        $this->em->persist($entity);
+        $this->em->flush();
+    }
+
+    public function insertMultiply(array $entities)
+    {
+        foreach ($entities as $entity)
+        {
+            $this->insert($entity);
+        }
     }
 
     public function getUser($id)
@@ -21,9 +35,4 @@ class DatabaseService
         return $this->em->getRepository(User::class)->find($id);
     }
 
-    public function getClientViaUser(UserInterface $user)
-    {
-        $userId = $user->getId();
-        return $this->em->getRepository(Receiver::class)->findOneBy(['userId' => $userId]);
-    }
 }

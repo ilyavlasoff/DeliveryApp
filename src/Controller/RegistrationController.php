@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\ReceiverFormType;
 use App\Form\RegistrationFormType;
 use App\Security\UserAuthenticator;
+use App\Service\DatabaseService;
 use App\Service\MailSender;
 use App\Service\RandomCodeGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -168,7 +169,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    public function completeAuthorization(Request $request)
+    public function completeAuthorization(Request $request, DatabaseService $db)
     {
         $session = $this->get('session');
         $user = $session->get('preAuthenticatedUser');
@@ -176,10 +177,12 @@ class RegistrationController extends AbstractController
         // Example of how to obtain an user:
         //$user = $this->getDoctrine()->getManager()->getRepository("AppBundle/Entity/User")->findOneBy(array('username' => "some user name example"));
 
-        $entityManager = $this->getDoctrine()->getManager();
+        /*$entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($user);
         $entityManager->persist($receiver);
-        $entityManager->flush();
+        $entityManager->flush();*/
+
+        $db->insertMultiply([$user, $receiver]);
 
         //Handle getting or creating the user entity likely with a posted form
         // The third parameter "main" can change according to the name of your firewall in security.yml

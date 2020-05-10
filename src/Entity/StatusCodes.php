@@ -31,6 +31,13 @@ class StatusCodes
         return $this->scode;
     }
 
+    public function setScode(string $code): self
+    {
+        $this->scode = $code;
+
+        return $this;
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;

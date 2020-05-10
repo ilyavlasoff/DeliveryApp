@@ -47,6 +47,7 @@ class User implements UserInterface
     public const CLIENT = 'ROLE_CLIENT';
     public const WAREHOUSE_EMPLOYEE = 'ROLE_STAFF';
     public const COURIER = 'ROLE_COURIER';
+    public const VENDOR = 'ROLE_VENDOR';
 
     public function __construct()
     {
