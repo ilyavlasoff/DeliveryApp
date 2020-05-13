@@ -1,0 +1,94 @@
+{% extends 'pageproto.html.twig' %}
+
+{% block pagecontent %}
+    <h1>Delivery</h1>
+    {% if allowedView %}
+        <h5>#{{ delivery.id }}</h5>
+        <div class="summary teal teal accent-1 z-depth-2">
+            <h6>Summary information</h6>
+            <p>Recipient: <span>{{ receiver.name ~ ' ' ~ receiver.surname ~ ' ' ~ receiver.patronymic }}</span></p>
+            <p>Last status: <span>{{ statusComment }}</span>, updated <span>{{ daysFromStatusSet }}</span> days ago</p>
+            <p>Current location: <span></span></p>
+            <p>On the road for <span>6</span> days</p>
+            <p>Intended date of delivery: </p>
+        </div>
+        <div class="flex-row">
+            <div class="summary semi grey lighten-2 z-depth-2">
+                <h5>Sender informaion</h5>
+                <p>Sender: <span>{{ sender.name }}</span></p>
+                <p>Sender address: <span>{{ delivery.depCountry ~ ', st.' ~
+                        delivery.depCity ~ ', str' ~ delivery.depStreet ~ ', ' ~
+                        delivery.depBuilding ~ ', ' ~ delivery.depFlat }}</span></p>
+                <p>ИНН: <span>{{ sender.inn }}</span></p>
+                <p>ОГРН: <span>{{ sender.ogrn }}</span></p>
+                <p>Кор.счет: <span>{{ sender.corAcc }}</span></p>
+                <p>БИК: <span>{{ sender.bik }}</span></p>
+                <p>КПП: <span>{{ sender.kpp }}</span></p>
+            </div>
+            <div class="summary semi grey lighten-2 z-depth-2">
+                <h5>Receiver information</h5>
+                <p>Name: <span>{{ receiver.name ~ ' ' ~ receiver.surname ~ ' ' ~
+                        receiver.patronymic}}</span></p>
+                <p>Country: <span>{{ delivery.destCountry }}</span></p>
+                <p>City: <span>{{ delivery.destCity }}</span></p>
+                <p>Address: <span>{{ 'str' ~ delivery.depStreet ~ ', ' ~
+                        delivery.depBuilding ~ ', ' ~ delivery.depFlat }}</span></p>
+                <p>Passport: <span>{{ receiver.passport }}</span></p>
+                <p>Phone: <span>{{ receiver.phone }}</span></p>
+                <p>E-mail: <span></span></p>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="summary semi grey lighten-2 z-depth-2">
+                <h5>Delivery informaion</h5>
+                <p>Type: <span>{{ delivery.type.name }}</span></p>
+                <p>Items: <span>{{ delivery.items | length }}</span></p>
+                <p>Height: <span></span></p>
+                <p>Length: <span></span></p>
+                <p>Width: <span></span></p>
+                <p>Weight:<span></span></p>
+                <p>Identifier: <span>{{ delivery.id }}</span></p>
+            </div>
+            <div class="summary semi grey lighten-2 z-depth-2">
+                <h5>Payments information</h5>
+                <p>Status: <span>{{ payment.status }}</span></p>
+                <p>Tariff name: <span>{{ payment.tariff }}</span></p>
+                <p>Price: <span>{{ payment.price }}</span></p>
+                <p>Track length: <span>{{ payment.len }}</span></p>
+                <p>Total: <span>{{ payment.sum }}</span></p>
+                <p>Paid: <span>{# Добавить статус оплаченности #}</span></p>
+                <p>Date: <span>{# Добавить дату совершения платежа #}</span></p>
+                <p>UID: <span>{{ payment.uip }}</span></p>
+            </div>
+        </div>
+        <h5>Delivery contents:</h5>
+        <table class="striped">
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Weight</td>
+                    <td>Category</td>
+                    <td>Fire danger</td>
+                    <td>Toxic</td>
+                    <td>Explosive</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in deliveryContents %}
+                <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.weight }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.fireDanger ? 'Yes':'No' }}</td>
+                    <td>{{ item.toxic ? 'Yes':'No' }}</td>
+                    <td>{{ item.explosive ? 'Yes':'No' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <h5>You don't allowed to view this page because your username is not equivalent to delivery owner's username<br>
+            Have troubles? Сontact our <a href="" target="_self">support team</a></h5>
+    {% endif %}
+{% endblock %}

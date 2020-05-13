@@ -1,0 +1,18 @@
+{% for delivery in deliveries %}
+<div class="col s4 hoverable">
+    <div class="card blue-grey darken-1">
+        <div class="card-content white-text">
+            <span class="card-title"><i class="material-icons">local_mall</i> Delivery #{{ delivery.id }}</span>
+            <p>
+                <ul>
+                    <li></li>
+                </ul>
+            </p>
+        </div>
+        <div class="card-action">
+            {% set deliveryId = delivery.id %}
+            <a href="{{ path('receiver_delivery', { id: deliveryId }) }}">View</a>
+        </div>
+    </div>
+</div>
+{% endfor %}

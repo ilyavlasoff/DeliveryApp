@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Receiver;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class DatabaseService
@@ -30,9 +31,20 @@ class DatabaseService
         }
     }
 
-    public function getUser($id)
+    public function getUser($id): object
     {
         return $this->em->getRepository(User::class)->find($id);
+    }
+
+    public function updateUserPassword($id, $encodedPassword)
+    {
+        $user = $this->getUser($id);
+        if (!$user)
+        {
+            throw new EntityNotFoundException();
+        }
+        $user->setPassword($encodedPassword);
+        $this->em->flush();
     }
 
 }

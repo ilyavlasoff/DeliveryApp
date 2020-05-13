@@ -25,6 +25,14 @@ body {
     display: flex;
     flex-direction: row;
 }
+.semi {
+    width: 50%;
+    max-width: 50%;
+    overflow-x: hidden;
+}
+.semi + .semi {
+    margin-left: 20px;
+}
 .flex-col {
     display: flex;
     flex-direction: column;
@@ -42,4 +50,10 @@ body {
 }
 .main-profile-picture {
     height: 200px;
+}
+.summary {
+    min-height: 200px;
+    border-radius: 10px;
+    padding: 40px;
+    margin-top: 40px;
 }

@@ -34,3 +34,7 @@ receiver_delivery:
 receiver_settings:
   path: /settings
   controller: App\Controller\ReceiverSettingsController::displayPage
+delivery_cards:
+  path: /cards
+  controller: App\Controller\DeliveryCardsController::getItems
+

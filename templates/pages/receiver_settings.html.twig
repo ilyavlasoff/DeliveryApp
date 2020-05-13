@@ -1,0 +1,80 @@
+{% extends 'pageproto.html.twig' %}
+
+{% block pagecontent %}
+    <h1>Settings</h1>
+
+    {% set formPasswordErrors = changePasswordForm.vars.errors.form.getErrors(true) %}
+    {% set formPrivateDataErrors = privateDataChangeForm.vars.errors.form.getErrors(true) %}
+    {% set formErrors = formPasswordErrors|merge(formPrivateDataErrors) %}
+    {% if formErrors|length %}
+        <div class="card-panel red lighten-1">
+            <label>Can not register due to these errors:</label>
+            <ul>
+                {% for error in formErrors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if messages|length %}
+        <div class="card-panel teal lighten-2">
+            <label>Can not register due to these errors:</label>
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <h5>Private data</h5>
+    {{ form_start(privateDataChangeForm) }}
+    <div class="input-field col s4">
+        {{ form_label(privateDataChangeForm.name) }}
+        {{ form_widget(privateDataChangeForm.name) }}
+    </div>
+    <div class="input-field col s4">
+        {{ form_label(privateDataChangeForm.surname) }}
+        {{ form_widget(privateDataChangeForm.surname) }}
+    </div>
+    <div class="input-field col s4">
+        {{ form_label(privateDataChangeForm.patronymic) }}
+        {{ form_widget(privateDataChangeForm.patronymic) }}
+    </div>
+    <div class="input-field col s12">
+        {{ form_label(privateDataChangeForm.username) }}
+        {{ form_widget(privateDataChangeForm.username) }}
+    </div>
+    <div class="input-field col s12">
+        {{ form_label(privateDataChangeForm.email) }}
+        {{ form_widget(privateDataChangeForm.email) }}
+    </div>
+    <div class="input-field col s12">
+        {{ form_label(privateDataChangeForm.passport) }}
+        {{ form_widget(privateDataChangeForm.passport) }}
+    </div>
+    <div class="input-field col s12">
+        {{ form_label(privateDataChangeForm.phone) }}
+        {{ form_widget(privateDataChangeForm.phone) }}
+    </div>
+        {{ form_row(privateDataChangeForm.submit, { 'attr': {'class': 'waves-effect waves-light btn'}}) }}
+    {{ form_end(privateDataChangeForm) }}
+
+
+    <h5>Change password</h5>
+    {{ form_start(changePasswordForm) }}
+        <div class="input-field col s12">
+            {{ form_label(changePasswordForm.oldPassword) }}
+            {{ form_widget(changePasswordForm.oldPassword) }}
+        </div>
+        <div class="input-field col s12">
+            {{ form_label(changePasswordForm.newPassword.first) }}
+            {{ form_widget(changePasswordForm.newPassword.first) }}
+        </div>
+        <div class="input-field col s12">
+            {{ form_label(changePasswordForm.newPassword.second) }}
+            {{ form_widget(changePasswordForm.newPassword.second, {'attr': {'class': 'validate'}}) }}
+        </div>
+        {{ form_row(changePasswordForm.submit, { 'attr': {'class': 'waves-effect waves-light btn'}}) }}
+    {{ form_end(changePasswordForm) }}
+
+{% endblock %}

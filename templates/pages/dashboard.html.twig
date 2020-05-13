@@ -3,60 +3,58 @@
 {% block pagecontent %}
     <h1>Dashboard</h1>
     <h4 class="grey-text darken-3">Here is summary information about your current deliveries</h4>
-    <div class="row">
-        <div class="col s4 hoverable">
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                    <span class="card-title"><i class="material-icons">local_mall</i> Card Title</span>
-                    <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div class="card-action">
-                    <a href="#">This is a link</a>
-                    <a href="#">This is a link</a>
-                </div>
-            </div>
-        </div>
-        <div class="col s4">
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                    <span class="card-title">Card Title</span>
-                    <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div class="card-action">
-                    <a href="#">This is a link</a>
-                    <a href="#">This is a link</a>
-                </div>
-            </div>
-        </div>
-        <div class="col s4">
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                    <span class="card-title">Card Title</span>
-                    <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div class="card-action">
-                    <a href="#">This is a link</a>
-                    <a href="#">This is a link</a>
-                </div>
-            </div>
-        </div>
-        <div class="col s4">
-            <div class="card blue-grey darken-1">
-                <div class="card-content white-text">
-                    <span class="card-title">Card Title</span>
-                    <p>I am a very simple card. I am good at containing small bits of information.
-                        I am convenient because I require little markup to use effectively.</p>
-                </div>
-                <div class="card-action">
-                    <a href="#">This is a link</a>
-                    <a href="#">This is a link</a>
-                </div>
-            </div>
-        </div>
+    <div id="noElements">
+        <h5>No deliveries found</h5>
+    </div>
+    <p id="countIndicator">Displayed: <span id="loadedCount"></span>/<span id="totalCount"></span></p>
+    <div class="row" id="cardsContainer">
+        <button class="waves-effect waves-light btn" id="loadMoreButton">Load more</button>
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        let loadedCount = 0, totalCount = 0;
+        $(document).ready(function() {
+            loadMoreCards();
+            $("#loadMoreButton").click(function() {
+                loadMoreCards();
+            })
+        })
+
+        function loadMoreCards() {
+            $.post(
+                "{{ path('delivery_cards') }}",
+                {
+                    'needs': '5',
+                    'offset': loadedCount,
+                    'displayAll': false
+                },
+                function(rawData, status) {
+                    let data = JSON.parse(rawData);
+                    totalCount = data.totalCount;
+                    loadedCount += data.loadedCount;
+                    console.log(rawData);
+                    let content = data.content;
+                    let visibilityNotFoundText;
+                    if (totalCount === 0) {
+                        visibilityNotFoundText = 'block';
+                        $("#countIndicator").css("display", "none");
+                    }
+                    else {
+                        visibilityNotFoundText = 'none';
+                        $("#loadedCount").append(loadedCount);
+                        $("#totalCount").append(totalCount);
+                    }
+                    $('#noElements').css("display", visibilityNotFoundText);
+                    if (totalCount === 0 || totalCount === loadedCount) {
+                        $("#loadMoreButton").css("display", "none");
+                    }
+                    $("#cardsContainer").append(content);
+                },
+                'json'
+            )
+        }
+    </script>
 {% endblock %}

@@ -28,7 +28,7 @@
                         <img src="{{ asset("public/media/default_user_man.png") }}" class="circle responsive-img" alt="User photo">
                     </div>
                     <div class="col s9">
-                        <p>Test User</p>
+                        <p>{{ client.getName() }} {{ client.getSurname() }}</p>
                     </div>
                 </div>
                 <ul class="collapsible">
@@ -63,7 +63,7 @@
                         <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
                     </li>
                     <li>
-                        <a href="{{ path('receiver_payments') }}">
+                        <a href="{{ path('receiver_settings') }}">
                             <div class="collapsible-header hoverable blue-grey-text"><i class="material-icons">settings</i>My settings</div>
                         </a>
                         <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>

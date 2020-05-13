@@ -12,9 +12,7 @@ class ReceiverPageController extends AbstractController
         $user = $this->getUser();
         $client = $db->getClientViaUser($user);
         $deliveries = $db->getDeliveriesList($client, 5, 0);
-        //var_dump($deliveries);
         $stat = $db->getDeliveriesStatistics($client);
-        var_dump($stat);
         return $this->render('pages/receiver_account.html.twig', [
             'client' => $client
         ]);
