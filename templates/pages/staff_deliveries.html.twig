@@ -1,0 +1,117 @@
+{% extends 'service_page_proto.html.twig' %}
+
+{% block pagecontent %}
+    <div class="input-field col s4">
+        <select multiple id="fieldsSelect">
+            <option value="d" selected>All Items</option>
+            <option value="1">Active items</option>
+            <option value="2">Delivered items</option>
+            <option value="3">Unpaid items</option>
+        </select>
+        <label>Fields</label>
+    </div>
+    <div class="input-field col s4">
+        <select multiple id="sortSelect">
+            <option value="arrivalDate" selected>Arrival date</option>
+            <option value="routeLength">Route length</option>
+            <option value="d.id">Identifier</option>
+            <option value="3">Unpaid items</option>
+        </select>
+        <label>Filter</label>
+    </div>
+    <div class="input-field col s4">
+        <select id="countSelect">
+            <option value="100" selected>100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="10000">10000</option>
+        </select>
+        <label>Filter</label>
+    </div>
+    <p>Select all<input type="checkbox" class="chb" id="selectAllCheckbox"></p>
+    <table id="dataTable">
+        <thead id="dataTableHead"></thead>
+        <tbody id="dataTableBody"></tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        let fieldsSelect, sortSelect, countSelect;
+        let pageNumber = 0, rowCountOnPage;
+        let checkAllBox = $('#selectAllCheckbox');
+        let checkedValues = [];
+
+
+
+        $(document).ready(function(){
+            sortSelect = $('#sortSelect').formSelect();
+            fieldsSelect = $('#fieldsSelect').formSelect();
+            countSelect = $('#countSelect').formSelect();
+            rowCountOnPage = countSelect.val();
+            loadData();
+        });
+
+        $("#countSelect").on('change', function () {
+            pageNumber = 0;
+            rowCountOnPage = countSelect.val();
+            reloadData();
+        });
+
+        function reloadData() {
+            $("#dataTableHead").empty();
+            $("#dataTableBody").empty();
+            loadData();
+        }
+
+
+        function loadData() {
+            $.post
+            (
+                '{{ path('deliveries_list') }}',
+                {
+                    'page': pageNumber,
+                    'count': rowCountOnPage,
+                    'fields': fieldsSelect.val(),
+                    'sort': sortSelect.val()
+                },
+                function (rawData, code) {
+                    console.log(rawData);
+                    let data = JSON.parse(rawData);
+                    let tableHead = $('#dataTableHead');
+                    let tableBody = $('#dataTableBody');
+                    let fields = data.fields;
+                    let headRow = $('<th></th>');
+                    let fieldNames = [];
+                    for (let i=0; i!== fields.length; ++i)
+                    {
+                        $('<td></td>').append(fields[i]).appendTo(headRow);
+                        fieldNames.push(fields[i]);
+                    }
+                    headRow.appendTo(tableHead);
+                    let content = data.content;
+                    for(let i=0; i!== content.length; ++i)
+                    {
+                        let row = $('<tr></tr>');
+                        let tableItem = $('<td></td>');
+                        $('<input/>', { type: 'checkbox', class: 'chb', value: i }).appendTo(tableItem);
+                        tableItem.appendTo(row);
+                        for(let j=0; j!==fieldNames.length; j++)
+                        {
+                            $('<td></td>').append(content[i][fieldNames[j]]).appendTo(row);
+                        }
+                        row.appendTo(tableBody);
+                    }
+                    $('.chb').change(function () {
+                        if (this.checked)
+                            checkedValues.push(this.value);
+                        else
+                            checkedValues.splice(checkedValues.indexOf(this.value), 1);
+                    });
+                },
+                'json'
+            )
+        }
+    </script>
+{% endblock %}

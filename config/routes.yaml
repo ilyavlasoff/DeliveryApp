@@ -38,3 +38,12 @@ delivery_cards:
   path: /cards
   controller: App\Controller\DeliveryCardsController::getItems
 
+staff_home:
+  path: /staff
+  controller: App\Controller\StaffHomeController::displayPage
+staff_deliveries:
+  path: /staff/deliveries
+  controller: App\Controller\StaffDeliveriesController::displayPage
+deliveries_list:
+  path: /staff/deliveries/list
+  controller: App\Controller\StaffDeliveriesController::getDeliveriesList

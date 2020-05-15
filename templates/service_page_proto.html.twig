@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Business information system{% endblock %}
+{% block stylesheets %}
+    {{ include('common.html.twig') }}
+{% endblock %}
+
+{% block body %}
+    <div class="page">
+        <nav>
+            <div class="nav-wrapper teal lighten-1">
+                <img src="{{ asset('public/media/mainlogo.png') }}" alt="Logo">
+                <ul class="right hide-on-med-and-down">
+                    {% if (app.user) %}
+                        <li><a href="{{ path('receiver_page') }}">{{ app.user.getUsername() }}</a></li>
+                        <li><a href="{{ path('app_logout') }}">Log out</a></li>
+                    {% else %}
+                        <li><a href="{{ path('app_login') }}">Login</a></li>
+                        <li><a href="{{ path('app_register') }}">Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <div class="row main">
+            <div class="col s2 grey lighten-2 z-depth-2 menubar">
+                <div class="col usercard flex-center">
+                    <div class="col s3">
+                        <img src="{{ asset("public/media/default_user_man.png") }}" class="circle responsive-img" alt="User photo">
+                    </div>
+                    <div class="col s9">
+                        <p>Employee Employee</p>
+                    </div>
+                </div>
+                <div class="collection">
+                    <a href="{{ path('staff_deliveries') }}" class="collection-item">Deliveries</a>
+                    <a href="#!" class="collection-item">Incoming shipments</a>
+                    <a href="#!" class="collection-item">Outcoming shipments</a>
+                    <a href="#!" class="collection-item">Autos</a>
+                    <a href="#!" class="collection-item">Couriers</a>
+                    <a href="#!" class="collection-item">Work shifts</a>
+                </div>
+            </div>
+            <div class="col s10 contents">
+                {% block pagecontent %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

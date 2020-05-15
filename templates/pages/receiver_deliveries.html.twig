@@ -1,1 +1,78 @@
 {% extends 'pageproto.html.twig' %}
+
+{% block pagecontent %}
+    <h1>My deliveries</h1>
+    <div class="row">
+        <div class="input-field col s4">
+            <select id="sortSelect">
+                <option value="" disabled selected>Date</option>
+                <option value="1">Number</option>
+                <option value="2">Items count</option>
+                <option value="3">Price</option>
+            </select>
+            <label>Sort rules</label>
+        </div>
+
+        <div class="input-field col s4">
+            <select multiple id="filterSelect">
+                <option value="" selected>All Items</option>
+                <option value="1">Active items</option>
+                <option value="2">Delivered items</option>
+                <option value="3">Unpaid items</option>
+            </select>
+            <label>Filter</label>
+        </div>
+
+    </div>
+    <button class="btn waves-effect waves-light" id="findButton">Find</button>
+    <div class="row" id="cardsContainer"></div>
+    <button class="btn waves-effect waves-light" id="loadMoreButton">Load more</button>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        let filterSelect, sortSelect;
+        $(document).ready(function(){
+            sortSelect = $('#sortSelect').formSelect();
+            filterSelect = $('#filterSelect').formSelect();
+            loadData();
+        });
+
+        $('#findButton').click(function () {
+            loadData();
+        })
+
+        let cardsContainer = $("#cardsContainer");
+        let offset = 0;
+
+        function loadData() {
+            $.post(
+                '{{ path('delivery_cards') }}',
+                {
+                    'filter': filterSelect.val(),
+                    'sort': sortSelect.val(),
+                    'needs' : 3,
+                    'sections': true,
+                    'offset' : offset
+                },
+                function (rawData, status) {
+                    console.log(rawData);
+                    let data = JSON.parse(rawData);
+                    let body = data.content;
+                    offset += data.loadedCount;
+                    for(let i=0; i!== data.loadedCount; ++i) {
+                        let section = body[i];
+                        let sectionTitle = section.title;
+                        let divider = $("<div></div>", { class: 'sectionDivider' });
+                        $("p").append(sectionTitle).appendTo(divider);
+                        divider.appendTo('cardsContainer');
+                        for(let i=0; i!== section.content.length; ++i) {
+                            $(section.content[i]).appendTo('cardsContainer');
+                        }
+                    }
+                },
+                'text'
+            )
+        }
+    </script>
+{% endblock %}

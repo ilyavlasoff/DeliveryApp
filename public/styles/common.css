@@ -57,3 +57,23 @@ body {
     padding: 40px;
     margin-top: 40px;
 }
+tbody {
+    display: block;
+    height: 750px;
+    overflow: auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+thead {
+    width: calc( 100% - 1em )
+}
+table {
+    width:100%;
+}
+.chb {
+    opacity: 100% !important;
+    pointer-events: auto !important;
+}

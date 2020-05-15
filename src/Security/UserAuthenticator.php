@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\PermissionsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,13 +31,19 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
     private $urlGenerator;
     private $csrfTokenManager;
     private $passwordEncoder;
+    private $permissionsManager;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(EntityManagerInterface $entityManager,
+                                UrlGeneratorInterface $urlGenerator,
+                                CsrfTokenManagerInterface $csrfTokenManager,
+                                PermissionsService $permissionsManager,
+                                UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->entityManager = $entityManager;
         $this->urlGenerator = $urlGenerator;
         $this->csrfTokenManager = $csrfTokenManager;
         $this->passwordEncoder = $passwordEncoder;
+        $this->permissionsManager = $permissionsManager;
     }
 
     public function supports(Request $request)
@@ -103,11 +110,12 @@ class UserAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
         }
         elseif (in_array(user::COURIER, $roles))
         {
-            return new RedirectResponse($this->urlGenerator->generate('admin_home'));
+            return new RedirectResponse($this->urlGenerator->generate('courier_home'));
         }
         elseif (in_array(user::WAREHOUSE_EMPLOYEE, $roles))
         {
-            return new RedirectResponse($this->urlGenerator->generate('employee_home'));
+            $this->permissionsManager->createStaffEnvironment($token->getUser());
+            return new RedirectResponse($this->urlGenerator->generate('staff_home'));
         }
         else
         {

@@ -4,7 +4,10 @@ namespace App\Service;
 
 use App\Entity\Delivery;
 use App\Entity\Receiver;
+use App\Entity\Warehouse;
 use Doctrine\DBAL\Exception\DatabaseObjectNotFoundException;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class DeliveryOperationService extends DatabaseService
@@ -65,5 +68,31 @@ class DeliveryOperationService extends DatabaseService
             ->getQuery()
             ->getSingleResult();
         return $paymentInfo;
+    }
+
+    public function getDeliveriesListInWarehouse(Warehouse $warehouse, int $count, int $offset, array $selectFields, array $orderCriterias): array
+    {
+        $queryBuilder = $this->em->createQueryBuilder()
+            ->select('d')
+            ->from('App\Entity\Delivery', 'd')
+            ->innerJoin('App\Entity\Arrival', 'a', Join::WITH, 'a.delivery = d.id')
+            ->innerJoin('App\Entity\Warehouse', 'w', Join::WITH, 'a.warehouse = w.id')
+            ->where('a.departureDate is NULL')
+            ->where('w.id = :id')
+            ->setParameter('id', $warehouse->getId())
+            ->setFirstResult($offset)
+            ->setMaxResults($count);
+        /*foreach ($orderCriterias as $orderCriteria => $ascDirection)
+        {
+            $queryBuilder
+                ->addOrderBy($orderCriteria, 'ASC');
+        }
+        foreach ($selectFields as $selectField)
+        {
+            $queryBuilder
+                ->addSelect($selectField);
+        }*/
+        $query = $queryBuilder->getQuery();
+        return $query->getResult(Query::HYDRATE_ARRAY);
     }
 }

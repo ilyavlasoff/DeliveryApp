@@ -26,6 +26,9 @@ class DeliveryCardsController extends AbstractController
         $client = $this->clientDb->getClientViaUser($this->getUser());
 
         $count = $request->request->get('needs');
+        $filter = $request->request->get('filter');
+        $sort = $request->request->get('sort');
+        $enableSections = $request->request->get('sections');
         $offset = $request->request->get('offset');
         if (!(is_numeric($count) && is_numeric($offset)))
         {
@@ -34,14 +37,20 @@ class DeliveryCardsController extends AbstractController
         }
         $displayAll = $request->request->get('displayAll');
 
-        $deliveries = $this->clientDb->getDeliveriesList($client, $count, $offset, $displayAll);
+        $deliveries = $this->clientDb->getDeliveriesList($client, $count, $offset, $displayAll, $sort, $filter);
         $totalCount = $this->clientDb->getDeliveriesStatistics($client);
         $loadedCount = count($deliveries);
 
+        if ($enableSections)
+        {
 
-        $content = $this->renderView('chunks/delivery_cards.html.twig', [
-            'deliveries' => $deliveries
-        ]);
+        }
+        else
+        {
+            $content = $this->renderView('chunks/delivery_cards.html.twig', [
+                'deliveries' => $deliveries
+            ]);
+        }
 
         return new JsonResponse(json_encode(['totalCount' => $totalCount['cnt'], 'loadedCount' => $loadedCount,
             'content' => $content]));
