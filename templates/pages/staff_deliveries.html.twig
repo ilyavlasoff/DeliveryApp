@@ -3,10 +3,6 @@
 {% block pagecontent %}
     <div class="input-field col s4">
         <select multiple id="fieldsSelect">
-            <option value="d" selected>All Items</option>
-            <option value="1">Active items</option>
-            <option value="2">Delivered items</option>
-            <option value="3">Unpaid items</option>
         </select>
         <label>Fields</label>
     </div>
@@ -21,7 +17,8 @@
     </div>
     <div class="input-field col s4">
         <select id="countSelect">
-            <option value="100" selected>100</option>
+            <option value="10" selected>10</option>
+            <option value="100">100</option>
             <option value="200">200</option>
             <option value="500">500</option>
             <option value="1000">1000</option>
@@ -29,34 +26,57 @@
         </select>
         <label>Filter</label>
     </div>
-    <p>Select all<input type="checkbox" class="chb" id="selectAllCheckbox"></p>
-    <table id="dataTable">
+    <div id="actionsBar">
+        <button type="button" class="waves-effect waves-light btn" id="addStatusButton">Add status</button>
+        <button type="button" class="waves-effect waves-light btn">Create group</button>
+        <button type="button" class="waves-effect waves-light btn">Add to carry</button>
+    </div>
+    <button type="button" class="waves-effect waves-light btn" id="refreshListButton">Display</button>
+    <select id="pageSelect"></select>
+    <table id="dataTable" class="responsive-table">
         <thead id="dataTableHead"></thead>
         <tbody id="dataTableBody"></tbody>
     </table>
+    {{ include('chunks/add_delivery_status_window.html.twig') }}
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        let fieldsSelect, sortSelect, countSelect;
-        let pageNumber = 0, rowCountOnPage;
+        let fieldsSelect, sortSelect, countSelect, pageSelect;
+        let pageNumber, rowCountOnPage, totalCount, loadedCountOnPage, totalPageCount;
         let checkAllBox = $('#selectAllCheckbox');
-        let checkedValues = [];
-
-
+        let actionsBar = $('#actionsBar');
+        let checkedValues = [], columnOptions = [];
 
         $(document).ready(function(){
             sortSelect = $('#sortSelect').formSelect();
-            fieldsSelect = $('#fieldsSelect').formSelect();
             countSelect = $('#countSelect').formSelect();
+            pageSelect = $('#pageSelect').formSelect();
             rowCountOnPage = countSelect.val();
+            pageNumber = 0;
+            actionsBar.css('display', 'none');
+            $('.modal').modal();
+            loadColumnOptions();
             loadData();
         });
+
+        $("#refreshListButton").click(function () {
+            reloadData();
+        })
 
         $("#countSelect").on('change', function () {
             pageNumber = 0;
             rowCountOnPage = countSelect.val();
             reloadData();
+        });
+
+        $("#pageSelect").on('change', function () {
+            pageNumber = pageSelect.val();
+            reloadData();
+        });
+
+        $("#fieldsSelect").on('change',  function () {
+            columnOptions = fieldsSelect.val();
         });
 
         function reloadData() {
@@ -65,53 +85,171 @@
             loadData();
         }
 
+        function calculatePagesCount() {
+            totalPageCount = Math.ceil(totalCount/rowCountOnPage);
+        }
+
+        function getOffset() {
+            return pageNumber * rowCountOnPage;
+        }
+
+        function refreshPageSelector() {
+            for (let i=0; i!== totalPageCount; ++i) {
+                let newOption = $("<option>", { value: i });
+                if (i === pageNumber) {
+                    newOption.attr("selected", "true");
+                }
+                newOption.append(i);
+                newOption.appendTo(pageSelect);
+            }
+            pageSelect = $('#pageSelect').formSelect();
+        }
 
         function loadData() {
             $.post
             (
                 '{{ path('deliveries_list') }}',
                 {
-                    'page': pageNumber,
+                    'offset': getOffset(),
                     'count': rowCountOnPage,
-                    'fields': fieldsSelect.val(),
+                    'fields': columnOptions,
                     'sort': sortSelect.val()
                 },
                 function (rawData, code) {
-                    console.log(rawData);
                     let data = JSON.parse(rawData);
-                    let tableHead = $('#dataTableHead');
-                    let tableBody = $('#dataTableBody');
                     let fields = data.fields;
-                    let headRow = $('<th></th>');
-                    let fieldNames = [];
-                    for (let i=0; i!== fields.length; ++i)
-                    {
-                        $('<td></td>').append(fields[i]).appendTo(headRow);
-                        fieldNames.push(fields[i]);
-                    }
-                    headRow.appendTo(tableHead);
                     let content = data.content;
-                    for(let i=0; i!== content.length; ++i)
-                    {
-                        let row = $('<tr></tr>');
-                        let tableItem = $('<td></td>');
-                        $('<input/>', { type: 'checkbox', class: 'chb', value: i }).appendTo(tableItem);
-                        tableItem.appendTo(row);
-                        for(let j=0; j!==fieldNames.length; j++)
-                        {
-                            $('<td></td>').append(content[i][fieldNames[j]]).appendTo(row);
-                        }
-                        row.appendTo(tableBody);
-                    }
-                    $('.chb').change(function () {
-                        if (this.checked)
-                            checkedValues.push(this.value);
-                        else
-                            checkedValues.splice(checkedValues.indexOf(this.value), 1);
-                    });
+                    loadedCountOnPage = parseInt(data.loadedCount);
+                    totalCount = parseInt(data.totalCount[1]);
+                    calculatePagesCount();
+                    refreshPageSelector();
+                    refreshDataTable(fields, content);
                 },
                 'json'
             )
         }
+
+        function refreshDataTable(fields, content) {
+            let tableHead = $('#dataTableHead');
+            let tableBody = $('#dataTableBody');
+            checkedValues = [];
+
+            let headRow = $('<th></th>');
+            $("<td></td>")
+                .append($("<input>", { type: 'checkbox', class: 'chb', id: 'selectAllCheckBox' }))
+                .appendTo(headRow);
+            let fieldNames = [];
+            for (let i=0; i!== fields.length; ++i)
+            {
+                $('<td></td>').append(fields[i]).appendTo(headRow);
+                fieldNames.push(fields[i]);
+            }
+            headRow.appendTo(tableHead);
+
+            for(let i=0; i!== content.length; ++i)
+            {
+                let row = $('<tr></tr>', { class: 'clickableTableRow', 'data-href': '#' });
+                let tableItem = $('<td></td>');
+                $('<input/>', { type: 'checkbox', class: 'chb', value: content[i].id }).appendTo(tableItem);
+                tableItem.appendTo(row);
+                for(let j=0; j!==fieldNames.length; j++)
+                {
+                    $('<td></td>').append(content[i][fieldNames[j]]).appendTo(row);
+                }
+                row.appendTo(tableBody);
+            }
+
+            $('#selectAllCheckBox').change(function () {
+                if (this.checked) {
+                    $(".chb").prop('checked', true);
+                }
+                else {
+                    $(".chb").prop('checked', false);
+                }
+            });
+
+            $('.chb').change(function () {
+                if (this.checked) {
+                    if (checkedValues.length === 0){
+                        actionsBar.css('display', 'block');
+                    }
+                    checkedValues.push(this.value);
+                }
+                else {
+                    checkedValues.splice(checkedValues.indexOf(this.value), 1);
+                    if (checkedValues.length === 0) {
+                        actionsBar.css('display', 'none');
+                    }
+                }
+            });
+
+        }
+
+        function loadColumnOptions() {
+            $.post(
+                '{{ path('delivery_column_fields') }}',
+                {},
+                function (rawData, status) {
+                    let data = JSON.parse(rawData);
+                    let tableFieldsSelect = $("#fieldsSelect");
+                    let options = data.fields;
+                    for (let realName in options) {
+                        $('<option/>', { value: realName, selected: true }).append(options[realName]).appendTo(tableFieldsSelect);
+                        columnOptions.push(realName);
+                    }
+                    fieldsSelect = tableFieldsSelect.formSelect();
+                },
+                'json'
+            )
+        }
+
+        $('#addStatusButton').click(function() {
+            $('#modal1').modal('open');
+            $('select').formSelect();
+            loadStatusCodes();
+        });
+
+        let statusCodesSelect;
+
+        function loadStatusCodes() {
+            $.post(
+                '{{ path('status_codes_list') }}',
+                {},
+                function(rawData, status) {
+                    let codeSelect = $('#statusCodesSelect');
+                    let data = JSON.parse(rawData);
+                    codeSelect.empty();
+                    for (let i=0; i!== data.length; ++i) {
+                        $('<option/>', { value: data[i].code }).append(data[i].title).appendTo(codeSelect);
+                    }
+                    statusCodesSelect = codeSelect.formSelect();
+                },
+                'json'
+            )
+        }
+
+        $("#addStatusSubmitButton").click(function() {
+            let code = $('#statusCodesSelect').val();
+            let message = $('#messageArea').val();
+            for (let i=0; i!== checkedValues.length; ++i) {
+                uploadStatusRecord(code, message, checkedValues[i]);
+            }
+        });
+
+        function uploadStatusRecord(code, message, deliveryId) {
+            $.post(
+                '{{ path('add_delivery_status') }}',
+                {
+                    'statusCode': code,
+                    'deliveryId': deliveryId,
+                    'message': message
+                },
+                function(rawData, code) {
+                    let data = JSON.parse(rawData);
+                },
+                'json'
+            )
+        }
+
     </script>
 {% endblock %}

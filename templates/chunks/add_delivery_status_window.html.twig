@@ -1,0 +1,22 @@
+{% extends 'modal_window.html.twig'%}
+{% block modalheader %}
+    <h4>Add status to deliveries</h4>
+{% endblock %}
+{% block modalcontent %}
+    <p>Selected items</p>
+    <div class="compact-view-block">
+        <table id="selectedItemsTable">
+            <thead class="selectedItemsTableHead"></thead>
+            <tbody class="selectedItemsTableBody"></tbody>
+        </table>
+    </div>
+
+    <div class="col s12">
+        <form id="addDeliveryStatusForm">
+            <select id="statusCodesSelect"></select>
+            <textarea id="messageArea"></textarea>
+            <button type="button" id="addStatusSubmitButton" class="modal-close waves-effect waves-green btn-flat">Add</button>
+        </form>
+    </div>
+
+{% endblock %}

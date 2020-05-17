@@ -45,5 +45,35 @@ staff_deliveries:
   path: /staff/deliveries
   controller: App\Controller\StaffDeliveriesController::displayPage
 deliveries_list:
-  path: /staff/deliveries/list
+  path: /staff/deliveries/ajax/list
   controller: App\Controller\StaffDeliveriesController::getDeliveriesList
+status_codes_list:
+  path: /staff/status-codes/ajax/list
+  controller: App\Controller\StaffDeliveriesController::getStatusCodes
+delivery_column_fields:
+  path: /staff/deliveries/ajax/service/column-fields
+  controller: App\Controller\StaffDeliveriesController::getDeliveryFields
+add_delivery_status:
+  path: /staff/deliveries/ajax/status/set
+  controller: App\Controller\StaffDeliveriesController::addDeliveryStatus
+staff_incoming_shipments:
+  path: /staff/shipments/incoming
+  controller: App\Controller\StaffShipmentsGroupController::displayPage
+staff_incoming_shipment_view:
+  path: /staff/shipments/incoming/view/{id}
+  controller: App\Controller\StaffShipmentsController::displayPage
+staff_incoming_shipments_group_list:
+  path: /staff/shipments/ajax/list/incoming
+  controller: App\Controller\StaffShipmentsGroupController::getShipmentGroups
+staff_outcoming_shipments_group_list:
+  path: /staff/shipments/ajax/list/outcoming
+  controller: App\Controller\StaffShipmentsGroupController::getShipmentGroups
+staff_incoming_shipment_item_list:
+  path: /staff/shipment/ajax/incoming/list
+  controller: App\Controller\StaffShipmentsController::getShipmentList
+staff_incoming_shipment_item_accept:
+  path: /staff/shipment/ajax/incoming/accept
+  controller: App\Controller\StaffShipmentsController::acceptShipment
+staff_shipment_full_view:
+  path: /staff/shipment/{id}
+  controller: App\Controller\StaffShipmentInfoController::displayPage

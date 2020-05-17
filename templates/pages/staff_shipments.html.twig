@@ -1,0 +1,69 @@
+{% extends 'service_page_proto.html.twig' %}
+
+{% block pagecontent %}
+    <div id="shipmentsGroupContainer" class="shipment-group-container"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        let offset = 0, count = 50;
+
+        $(document).ready(function () {
+            loadData();
+        });
+
+        function loadData() {
+            $.post(
+                '{{ path('staff_incoming_shipments_group_list') }}',
+                {
+                    'offset': offset,
+                    'count': count
+                },
+                function (rawData, status) {
+                    let data = JSON.parse(rawData);
+                    refreshShipmentsData(data);
+                }
+            )
+        }
+
+        function refreshShipmentsData(data)
+        {
+            let container = $("#shipmentsGroupContainer");
+            for (let num in data) {
+                let item = data[num]
+                let shippedBy = item['wid'];
+                let active = item['active'];
+                let count = item['count'];
+                let startDateTime, endDateTime;
+                if (item['startTime']['date']) {
+                    startDateTime = Date.parse(item['startTime']['date']);
+                }
+                if (item['endTime']['date']) {
+                    endDateTime = Date.parse(item['endTime']['date']);
+                }
+                let number = item['number'];
+                let name = item['name'];
+                let surname = item['surname'];
+
+                let block = $("<div></div>", { class: 'shipmentsGroupElementContainer'});
+                $("<p></p>").append("Shipped by workshift: " + shippedBy).appendTo(block);
+                if (active) {
+                    $("<p></p>").append("Active").appendTo(block);
+                }
+                $("<p></p>").append("Deliveries: " + count).appendTo(block);
+                $("<p></p>").append("Auto state number: " + number).appendTo(block);
+                $("<p></p>").append("Courier: " + name + ' ' + surname).appendTo(block);
+                if (startDateTime && endDateTime) {
+                    $("<p></p>").append("Shipping from " + startDateTime.toString() + " to " + endDateTime.toString()).appendTo(block);
+                }
+                $("<a>", { href: '/staff/shipments/incoming/view/' + shippedBy, target: 'self' })
+                    .append($('<button></button>').append('Accept'))
+                    .appendTo(block);
+                $("<a>", { href: '/staff/shipments/incoming/view/' + shippedBy, target: 'self' })
+                    .append($('<button></button>').append('Information'))
+                    .appendTo(block);
+                block.appendTo(container);
+            }
+        }
+    </script>
+{% endblock %}

@@ -4,6 +4,8 @@ namespace App\Service;
 
 use App\Entity\Delivery;
 use App\Entity\Receiver;
+use App\Entity\StatusCodes;
+use App\Entity\StatusHistory;
 use App\Entity\Warehouse;
 use Doctrine\DBAL\Exception\DatabaseObjectNotFoundException;
 use Doctrine\ORM\Query;
@@ -72,27 +74,82 @@ class DeliveryOperationService extends DatabaseService
 
     public function getDeliveriesListInWarehouse(Warehouse $warehouse, int $count, int $offset, array $selectFields, array $orderCriterias): array
     {
-        $queryBuilder = $this->em->createQueryBuilder()
-            ->select('d')
-            ->from('App\Entity\Delivery', 'd')
+        $queryBuilder = $this->em->createQueryBuilder();
+        $queryBuilder->from('App\Entity\Delivery', 'd');
+        $queryBuilder->innerJoin('App\Entity\Arrival', 'a', Join::WITH, 'a.delivery = d.id');
+        $queryBuilder->innerJoin('App\Entity\Warehouse', 'w', Join::WITH, 'a.warehouse = w.id');
+        $queryBuilder->where($queryBuilder->expr()->isNotNull('a.departureDate'));
+        $queryBuilder->where('w.id = :id');
+        $queryBuilder->setParameter('id', $warehouse->getId());
+        $queryBuilder->setFirstResult($offset);
+        $queryBuilder->setMaxResults($count);
+        /*foreach ($orderCriterias as $orderCriteria => $ascDirection)
+        {
+            $queryBuilder
+                ->addOrderBy($orderCriteria, 'ASC');
+        }*/
+        foreach ($selectFields as $selectField)
+        {
+            $queryBuilder
+                ->addSelect($selectField);
+        }
+        $query = $queryBuilder->getQuery();
+        return $query->getResult(Query::HYDRATE_ARRAY);
+    }
+
+    public function getDeliveriesCountInWarehouse(Warehouse $warehouse)
+    {
+        $query = $this->em->createQueryBuilder()
+            ->select('COUNT(d)')
+            ->from ('App\Entity\Delivery', 'd')
             ->innerJoin('App\Entity\Arrival', 'a', Join::WITH, 'a.delivery = d.id')
             ->innerJoin('App\Entity\Warehouse', 'w', Join::WITH, 'a.warehouse = w.id')
             ->where('a.departureDate is NULL')
             ->where('w.id = :id')
             ->setParameter('id', $warehouse->getId())
-            ->setFirstResult($offset)
-            ->setMaxResults($count);
-        /*foreach ($orderCriterias as $orderCriteria => $ascDirection)
+            ->getQuery();
+        return $query->getScalarResult();
+    }
+
+    public function getDeliveryStatusCodes(): array
+    {
+        return $this->em->getRepository(StatusCodes::class)->findAll();
+    }
+
+    public function getDeliveryStatusCodeById($id): object
+    {
+        return $this->em->getRepository(StatusCodes::class)->find($id);
+    }
+
+    public function getStatusCodes(): array
+    {
+        /*$query = $this->em->createQueryBuilder()
+            ->select('sc.scode code, sc.title title')
+            ->from('App\Entity\StatusCodes', 'sc')
+            ->getQuery();
+        return $query->execute(Query::HYDRATE_ARRAY);*/
+        $rep = $this->em->getRepository(StatusCodes::class)->findAll();
+        $arr = [];
+        foreach ($rep as $item)
         {
-            $queryBuilder
-                ->addOrderBy($orderCriteria, 'ASC');
+            $arr[] = ['code' => $item->getScode(), 'title' => $item->getTitle()];
         }
-        foreach ($selectFields as $selectField)
-        {
-            $queryBuilder
-                ->addSelect($selectField);
-        }*/
-        $query = $queryBuilder->getQuery();
-        return $query->getResult(Query::HYDRATE_ARRAY);
+        return $arr;
+    }
+
+    public function addStatusHistoryRecord(Delivery $delivery, StatusCodes $statusCode, \DateTimeInterface $dateTime, string $statusComment)
+    {
+        $statusHistoryRecord = new StatusHistory();
+        $statusHistoryRecord->setStatusComment($statusComment);
+        $statusHistoryRecord->setStatusSetDate($dateTime);
+        $statusHistoryRecord->setDelivery($delivery);
+        $statusHistoryRecord->setStatusCode($statusCode);
+        $this->em->persist($statusHistoryRecord);
+        $this->em->flush();
+    }
+
+    public function getDeliveryFields()
+    {
+        return $this->em->getClassMetadata('App\Entity\Delivery')->getColumnNames();
     }
 }

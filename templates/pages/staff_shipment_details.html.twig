@@ -1,0 +1,91 @@
+{% extends 'service_page_proto.html.twig' %}
+
+{% block pagecontent %}
+    <div id="deliveryItemsContainer"></div>
+    <button type="button" class="btn btn-large" id="acceptDeliveryButton">Accept</button>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            loadData();
+        });
+
+        function loadData() {
+            $.post(
+                '{{ path('staff_incoming_shipment_item_list') }}',
+                {
+                    'id': {{ id }}
+                },
+                function(rawData, status) {
+                    let data = JSON.parse(rawData);
+                    refreshShipmentsList(data);
+                },
+                'json'
+            )
+        }
+
+        function refreshShipmentsList(data) {
+            for (num in data) {
+                let item = data[num];
+                let itemsCount = item['itemsCount'];
+                let itemsWeight = item['itemsWeight'];
+                let itemsAddress = item['address'];
+                let itemsPostcode = item['postcode'];
+                let id = item['id'];
+                let block = $('<div></div>');
+                $('<p></p>').append('Items: ' + itemsCount).appendTo(block);
+                $('<p></p>').append('Total weight: ' + itemsWeight).appendTo(block);
+                $('<p></p>').append('Address: ' + itemsAddress).appendTo(block);
+                $('<p></p>').append('Destination postcode: ' + itemsPostcode).appendTo(block);
+                let inputsBlock = $('<div></div>', {id: id, class: 'deliveryLocation'})
+                $('<p></p>')
+                    .append('Storage ')
+                    .append($('<input>', { type: 'text', id: 'storageValueContainer' + id}))
+                    .appendTo(inputsBlock);
+                $('<p></p>')
+                    .append('Shelf ')
+                    .append($('<input>', { type: 'text', id: 'shelfValueContainer' + id}))
+                    .appendTo(inputsBlock);
+                $('<p></p>')
+                    .append('Place ')
+                    .append($('<input>', { type: 'text', id: 'placeValueContainer' + id}))
+                    .appendTo(inputsBlock);
+                inputsBlock.appendTo(block);
+                $('#deliveryItemsContainer').append(block);
+            }
+            $('#acceptDeliveryButton').click(function () {
+                acceptDeliveries();
+            });
+        }
+
+        function acceptDeliveries() {
+            let deliveriesLocationBlocks = $('.deliveryLocation');
+            for (let num in deliveriesLocationBlocks) {
+                let block = deliveriesLocationBlocks[num];
+                let deliveryId = block.id;
+                let storageValue = $('#storageValueContainer' + deliveryId)[0].value;
+                let shelfValue = ($('#shelfValueContainer' + deliveryId)[0]).value;
+                let placeValue = ($('#placeValueContainer' + deliveryId)[0]).value;
+                uploadAcceptingDeliveries(deliveryId, storageValue, shelfValue, placeValue);
+            }
+        }
+
+        function uploadAcceptingDeliveries(deliveryId, storageValue, shelfValue, placeValue) {
+            $.post(
+                '{{ path('staff_incoming_shipment_item_accept') }}',
+                {
+                    'storageValue': storageValue,
+                    'shelfValue': shelfValue,
+                    'placeValue': placeValue,
+                    'deliveryId': deliveryId
+                },
+                function (rawData, code) {
+                    let data = JSON.parse(rawData);
+                },
+                'json'
+            )
+        }
+    </script>
+{% endblock %}
+
