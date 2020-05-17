@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Staff;
 
 use App\Service\ShippingOperationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,15 +17,6 @@ class StaffShipmentsGroupController extends  AbstractController
     {
         $this->shipmentDBOperator = $shipmentDBOperator;
         $this->session = $session;
-    }
-
-    public function getShipmentGroups(Request $request)
-    {
-        $count = $request->request->get('count');
-        $offset = $request->request->get('offset');
-        $warehouse = $this->session->get('currentWarehouse');
-        $shipmentGroups = $this->shipmentDBOperator->getIncomingShipmentGroups($warehouse, $count, $offset);
-        return new JsonResponse(json_encode($shipmentGroups));
     }
 
     public function displayPage()

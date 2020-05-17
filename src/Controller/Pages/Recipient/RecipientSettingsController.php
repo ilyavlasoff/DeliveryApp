@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Recipient;
 
 use App\Form\ChangePasswordFormType;
 use App\Form\ClientPrivateDataFormType;
@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class ReceiverSettingsController extends AbstractController
+class RecipientSettingsController extends AbstractController
 {
     private $db;
     private $passwordEncoder;

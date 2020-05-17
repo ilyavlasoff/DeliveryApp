@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Recipient;
 
 use App\Service\ClientOperationService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MainboardController extends AbstractController
+class RecipientMainboardController extends AbstractController
 {
     private $clientDb;
 

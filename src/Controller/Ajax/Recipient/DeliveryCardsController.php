@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Ajax\Recipient;
 
 use App\Service\ClientOperationService;
 use App\Service\DeliveryOperationService;

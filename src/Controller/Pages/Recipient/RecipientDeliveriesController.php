@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Recipient;
 
 use App\Service\ClientOperationService;
 use App\Service\DeliveryOperationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class ReceiverDeliveriesController extends AbstractController
+class RecipientDeliveriesController extends AbstractController
 {
     private $deliveryDb, $clientDb;
 

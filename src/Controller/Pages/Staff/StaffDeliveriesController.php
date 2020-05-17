@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Staff;
 
 use App\Entity\StatusHistory;
 use App\Entity\Warehouse;

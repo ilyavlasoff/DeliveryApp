@@ -1,0 +1,14 @@
+{% extends 'service_page_proto.html.twig' %}
+
+{% block pagecontent %}
+    {% for item in autos %}
+        <div>
+            <p>{{ item.number }}</p>
+            <p>{{ item.model }}</p>
+            <p>{{ item.requiredDriveCat | join(', ')  }}</p>
+            <p>{{ item.capacity }}</p>
+            <p>{{ item.isFunctional ? 'Functional' : 'Infunctional' }}</p>
+            <a href="{{ path('staff_auto_information', {id: item.number}) }}"><button>View</button></a>
+        </div>
+    {% endfor %}
+{% endblock %}

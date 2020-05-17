@@ -1,79 +1,99 @@
+#Логин и регистрация
 app_login:
   path: /login
-  controller: App\Controller\AuthenticationController::login
+  controller: App\Controller\Service\AuthenticationController::login
 app_logout:
   path: /logout
-  controller: App\Controller\AuthenticationController::logout
+  controller: App\Controller\Service\AuthenticationController::logout
 app_register:
   path: /register
-  controller: App\Controller\RegistrationController::register
+  controller: App\Controller\Service\RegistrationController::register
+
+#Регистрация аккаунта получателя
 receiver_register:
   path: /client
-  controller: App\Controller\RegistrationController::createReceiver
+  controller: App\Controller\Service\RecipientCheckInController::createRecipient
 app_confirm:
   path: /confirm
-  controller: App\Controller\RegistrationController::confirmRegistration
+  controller: App\Controller\Service\RecipientCheckInController::confirmRegistration
+
+#Представление клиента
 main_page:
   path: /dash
-  controller: App\Controller\MainboardController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientMainboardController::displayPage
 receiver_page:
   path: /my
-  controller: App\Controller\ReceiverPageController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientPageController::displayPage
 receiver_deliveries:
   path: /deliveries
-  controller: App\Controller\ReceiverDeliveriesController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientDeliveriesController::displayPage
 receiver_tracking:
   path: /tracking
-  controller: App\Controller\ReceiverTrackingController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientTrackingController::displayPage
 receiver_payments:
   path: /payments
-  controller: App\Controller\ReceiverPaymentsController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientPaymentsController::displayPage
 receiver_delivery:
   path: /delivery/{id}
-  controller: App\Controller\ReceiverDeliveryInfoController::displayPage
+  controller: App\Controller\Pages\Recipient\DeliveryInformationController::displayPage
 receiver_settings:
   path: /settings
-  controller: App\Controller\ReceiverSettingsController::displayPage
+  controller: App\Controller\Pages\Recipient\RecipientSettingsController::displayPage
 delivery_cards:
   path: /cards
-  controller: App\Controller\DeliveryCardsController::getItems
+  controller: App\Controller\Ajax\Recipient\DeliveryCardsController::getItems
 
+#Представление сотрудников
+
+#Pages
 staff_home:
   path: /staff
-  controller: App\Controller\StaffHomeController::displayPage
+  controller: App\Controller\Pages\Staff\StaffHomeController::displayPage
 staff_deliveries:
   path: /staff/deliveries
-  controller: App\Controller\StaffDeliveriesController::displayPage
-deliveries_list:
-  path: /staff/deliveries/ajax/list
-  controller: App\Controller\StaffDeliveriesController::getDeliveriesList
-status_codes_list:
-  path: /staff/status-codes/ajax/list
-  controller: App\Controller\StaffDeliveriesController::getStatusCodes
-delivery_column_fields:
-  path: /staff/deliveries/ajax/service/column-fields
-  controller: App\Controller\StaffDeliveriesController::getDeliveryFields
-add_delivery_status:
-  path: /staff/deliveries/ajax/status/set
-  controller: App\Controller\StaffDeliveriesController::addDeliveryStatus
+  controller: App\Controller\Pages\Staff\StaffDeliveriesController::displayPage
 staff_incoming_shipments:
   path: /staff/shipments/incoming
-  controller: App\Controller\StaffShipmentsGroupController::displayPage
+  controller: App\Controller\Pages\Staff\StaffShipmentsGroupController::displayPage
 staff_incoming_shipment_view:
   path: /staff/shipments/incoming/view/{id}
-  controller: App\Controller\StaffShipmentsController::displayPage
+  controller: App\Controller\Pages\Staff\StaffShipmentsController::displayPage
+#staff_shipment_full_view:
+#  path: /staff/shipment/{id}
+#  controller: App\Controller\Pages\Staff\StaffShipmentInfoController::displayPage
+staff_auto_list:
+  path: /staff/auto/list
+  controller: App\Controller\Pages\Staff\AutoListController::displayPage
+staff_auto_information:
+  path: /staff/auto/{id}
+  controller: App\Controller\Pages\Staff\AutoInformationController::displayPage
+staff_courier_list:
+  path: /staff/courier/list
+  controller: App\Controller\Pages\Staff\CourierListController::displayPage
+#Ajax
 staff_incoming_shipments_group_list:
   path: /staff/shipments/ajax/list/incoming
-  controller: App\Controller\StaffShipmentsGroupController::getShipmentGroups
+  controller: App\Controller\Ajax\Staff\ShipmentsAjaxController::getShipmentGroups
+staff_incoming_shipment_item_list:
+  path: /staff/shipment/ajax/incoming/list
+  controller: App\Controller\Ajax\Staff\ShipmentsAjaxController::getShipmentList
+staff_incoming_shipment_item_accept:
+  path: /staff/shipment/ajax/incoming/accept
+  controller: App\Controller\Ajax\Staff\ShipmentsAjaxController::acceptShipment
+deliveries_list:
+  path: /staff/deliveries/ajax/list
+  controller: App\Controller\Ajax\Staff\DeliveriesAjaxController::getDeliveriesList
+status_codes_list:
+  path: /staff/status-codes/ajax/list
+  controller: App\Controller\Ajax\Staff\DeliveryStatusesAjaxController::getStatusCodes
+delivery_column_fields:
+  path: /staff/deliveries/ajax/service/column-fields
+  controller: App\Controller\Ajax\Staff\DeliveriesAjaxController::getDeliveryFields
+add_delivery_status:
+  path: /staff/deliveries/ajax/status/set
+  controller: App\Controller\Ajax\Staff\DeliveryStatusesAjaxController::addDeliveryStatus
+
+## unused
 staff_outcoming_shipments_group_list:
   path: /staff/shipments/ajax/list/outcoming
   controller: App\Controller\StaffShipmentsGroupController::getShipmentGroups
-staff_incoming_shipment_item_list:
-  path: /staff/shipment/ajax/incoming/list
-  controller: App\Controller\StaffShipmentsController::getShipmentList
-staff_incoming_shipment_item_accept:
-  path: /staff/shipment/ajax/incoming/accept
-  controller: App\Controller\StaffShipmentsController::acceptShipment
-staff_shipment_full_view:
-  path: /staff/shipment/{id}
-  controller: App\Controller\StaffShipmentInfoController::displayPage

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Pages\Recipient;
 
 use App\Service\ClientOperationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class ReceiverPageController extends AbstractController
+class RecipientPageController extends AbstractController
 {
     public function displayPage(ClientOperationService $db)
     {

@@ -1,0 +1,38 @@
+{%  extends 'service_page_proto.html.twig' %}
+{% block pagecontent %}
+    <h3>Auto</h3>
+    <div>
+        <p>State number: <span>{{ auto.number }}</span></p>
+        <p>Model: <span>{{ auto.model }}</span></p>
+        <p>Maximum capacity: <span>{{ auto.capacity }}</span></p>
+        <p>Required drive categories: <span>{{ auto.requiredDriveCat|join(', ') }}</span></p>
+        <p>Is functional: <span>{{ auto.isFunctional ? 'Yes':'No' }}</span></p>
+    </div>
+    <table>
+        <thead>
+        <title>Auto using information:</title>
+        {#<th>
+            <td colspan="2">Driver</td>
+            <td colspan="3">Workshift</td>
+        </th>#}
+        <th>
+            <td>Name</td>
+            <td>Surname</td>
+            <td>Start at</td>
+            <td>End as</td>
+            <td>Active</td>
+        </th>
+        </thead>
+        <tbody>
+        {% for row in workshiftHistory %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.surname }}</td>
+                <td>{{ row.start|date('Y-m-d\\TH:i:sP') }}</td>
+                <td>{{ row.end|date('Y-m-d\\TH:i:sP') }}</td>
+                <td>{{ row.active ? 'Yes' : 'No' }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
