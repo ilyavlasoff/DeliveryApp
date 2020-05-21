@@ -1,0 +1,41 @@
+{% extends 'service_page_proto.html.twig' %}
+
+{% block pagecontent %}
+    <h3>Add new auto</h3>
+    {% set formErrors = autoForm.vars.errors.form.getErrors(true) %}
+    {% if formErrors|length %}
+        <div class="card-panel red lighten-1">
+            <label>Can not add workshift due to these errors:</label>
+            <ul>
+                {% for error in formErrors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {{ form_start(autoForm) }}
+        <div class="input-field">
+            {{ form_label(autoForm.number) }}
+            {{ form_widget(autoForm.number) }}
+        </div>
+        <div class="input-field">
+            {{ form_label(autoForm.model) }}
+            {{ form_widget(autoForm.model) }}
+        </div>
+        <div class="input-field">
+            {{ form_label(autoForm.requiredDriveCat) }}
+            {{ form_widget(autoForm.requiredDriveCat) }}
+        </div>
+        <div class="input-field">
+            {{ form_label(autoForm.capacity) }}
+            {{ form_widget(autoForm.capacity) }}
+        </div>
+        <p>
+            <label>
+                {{ form_widget(autoForm.isFunctional, { 'attr': {'checked' : 'checked'} }) }}
+                <span>{{ form_label(autoForm.isFunctional) }}</span>
+            </label>
+        </p>
+        {{ form_row(autoForm.submit, { 'attr': {'class' : 'btn' } }) }}
+    {{ form_end(autoForm) }}
+{% endblock %}

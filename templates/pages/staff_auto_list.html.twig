@@ -1,14 +1,33 @@
 {% extends 'service_page_proto.html.twig' %}
 
 {% block pagecontent %}
-    {% for item in autos %}
-        <div>
-            <p>{{ item.number }}</p>
-            <p>{{ item.model }}</p>
-            <p>{{ item.requiredDriveCat | join(', ')  }}</p>
-            <p>{{ item.capacity }}</p>
-            <p>{{ item.isFunctional ? 'Functional' : 'Infunctional' }}</p>
-            <a href="{{ path('staff_auto_information', {id: item.number}) }}"><button>View</button></a>
-        </div>
-    {% endfor %}
+    <h3>Autos</h3>
+    <a href="{{ path('admin_auto_add') }}"><button class="btn">Add auto</button></a>
+    <table>
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Model</th>
+                <th>Category</th>
+                <th>Capacity</th>
+                <th>Functional</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in autos %}
+            <tr>
+                <td>{{ item.number }}</td>
+                <td>{{ item.model }}</td>
+                <td>{{ item.requiredDriveCat | join(', ')  }}</td>
+                <td>{{ item.capacity }}</td>
+                <td>{{ item.isFunctional ? '+' : '-' }}</td>
+                <td>
+                    <a href="{{ path('staff_auto_information', {id: item.number}) }}">
+                        <button class="btn">View</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

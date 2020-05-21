@@ -1,0 +1,84 @@
+{% extends 'service_page_proto.html.twig' %}
+{% block pagecontent %}
+    <h3>Workshifts</h3>
+    <div class="flex-row">
+        <a href="{{ path('staff_workshift_add') }}"><button class="btn">Add workshift</button></a>
+        <div class="flex-row" style="margin-left: auto; align-items: center;">
+            <select id="fieldsSortSelector">
+                {% for field in fields %}
+                    <option value="{{ field }}">{{ field }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn" style="margin-left: 10px;">Filter</button>
+        </div>
+    </div>
+    {{ form_start(workshiftFilterForm) }}
+    <div class="flex-col">
+        <div class="flex-row">
+            <div class="input-field col s6">
+                {{ form_widget(workshiftFilterForm.fromDate, { attr: {'class': 'datepicker', 'id': 'fromDatePicker'}}) }}
+                <label for="first_name">{{ form_label(workshiftFilterForm.fromDate) }}</label>
+            </div>
+            <div class="input-field col s6">
+                {{ form_widget(workshiftFilterForm.toDate, { attr: {'class': 'datepicker', 'id': 'toDatePicker'}}) }}
+                <label for="first_name">{{ form_label(workshiftFilterForm.toDate) }}</label>
+            </div>
+        </div>
+        <div class="flex-row">
+            <div class="input-field col s6">
+                {{ form_widget(workshiftFilterForm.courierID) }}
+                <label for="first_name">{{ form_label(workshiftFilterForm.courierID) }}</label>
+            </div>
+            <div class="input-field col s6">
+                {{ form_widget(workshiftFilterForm.courierSurname) }}
+                <label for="first_name">{{ form_label(workshiftFilterForm.courierSurname) }}</label>
+            </div>
+            <p>
+                <label>
+                    {{ form_widget(workshiftFilterForm.active) }}
+                    <span>{{ form_label(workshiftFilterForm.active) }}</span>
+                </label>
+            </p>
+        </div>
+        {{ form_row(workshiftFilterForm.submit, { 'attr': {'class': 'btn'}}) }}
+    </div>
+    <br>
+    {{ form_end(workshiftFilterForm) }}
+    <table>
+        <thead>
+            <tr>
+                <th>Workshift ID</th>
+                <th>Starts at</th>
+                <th>Ends at</th>
+                <th>Active</th>
+                <th>Auto</th>
+                <th>Courier ID</th>
+                <th>Items</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for workshift in workshifts %}
+            <tr>
+                <td>{{ workshift.workshiftId }}</td>
+                <td>{{ workshift.start|date('Y-m-d H:i') }}</td>
+                <td>{{ workshift.end|date('Y-m-d H:i') }}</td>
+                <td>{{ workshift.active ? 'Yes' : 'No'}}</td>
+                <td>{{ workshift.number }}</td>
+                <td>{{ workshift.courierId }}</td>
+                <td>{{ workshift.carryCount }}</td>
+                <td><a href="{{ path('staff_workshift_information', {'id': workshift.workshiftId}) }}"><button class="btn">View</button></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $('#fieldsSortSelector').formSelect();
+            $('.datepicker').datepicker();
+        })
+    </script>
+{% endblock %}

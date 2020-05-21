@@ -1,0 +1,60 @@
+{% extends 'service_page_proto.html.twig' %}
+{% block pagecontent %}
+    <h3>Workshift {{ workshift.id }}</h3>
+    <h5>Properties:</h5>
+    <ul>
+        <li>Identifier: <span>{{ workshift.id }}</span></li>
+        <li>Active: <span>{{ workshift.active ? 'yes' : 'no' }}</span></li>
+        <li>Starts at: <span>{{ workshift.startTime | date('Y-m-d H:i')  | default('not defined') }}</span></li>
+        <li>Ends at: <span>{{ workshift.endTime | date('Y-m-d H:i')  | default('not defined') }}</span></li>
+    </ul>
+    <h5>Contents:</h5>
+    <ul>
+        <li>Total count of deliveries:<span>{{ count[0].count }}</span></li>
+        <li>Sum weight: <span>{{ loading.sumWeight }}</span></li>
+        <li>Average weight of delivery: <span>{{ loading.sumWeight }}</span></li>
+        <li>Loading percent: <span>{{ loading.loadedPercent }}</span></li>
+    </ul>
+    <h5>Auto:</h5>
+    <ul>
+        <li>Number: <span>{{ auto.number }}</span></li>
+        <li>Model: <span>{{ auto.model }}</span></li>
+        <li>Capacity: <span>{{ auto.capacity }}</span></li>
+    </ul>
+    <h5>Courier:</h5>
+    <ul>
+        <li>ID: <span>{{ courier.empId.id }}</span></li>
+        <li>Name: <span>{{ courier.empId.name ~ ' ' ~ courier.empId.surname }}</span></li>
+        <li>Passport: <span>{{ courier.empId.passport }}</span></li>
+        <li>Appointment: <span>{{ courier.empId.appointment.appointmentName }}</span></li>
+    </ul>
+    {% if carries | length %}
+    <h5>Table of contents:</h5>
+    <table>
+        <thead>
+            <tr>
+                <th>Delivery ID</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Postcode</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carry in carries %}
+                <tr>
+                    <td>{{ carry.delivery.id }}</td>
+                    <td>{{ carry.fromWarehouse.id ~ ', ' ~ carry.fromWarehouse.city }}</td>
+                    <td>{{ carry.toWarehouse.id ~ ', ' ~ carry.toWarehouse.city }}</td>
+                    <td>{{ carry.delivery.destPostcode }}</td>
+                    <td>{{ carry.delivery.items|length }}</td>
+                    <td><a href="{{ path('staff_shipment_full_view', {'id': carry.delivery.id }) }}">
+                            <button type="button" class="btn">View</button></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h5>No contents</h5>
+    {% endif %}
+{% endblock %}

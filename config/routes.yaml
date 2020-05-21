@@ -58,9 +58,9 @@ staff_incoming_shipments:
 staff_incoming_shipment_view:
   path: /staff/shipments/incoming/view/{id}
   controller: App\Controller\Pages\Staff\StaffShipmentsController::displayPage
-#staff_shipment_full_view:
-#  path: /staff/shipment/{id}
-#  controller: App\Controller\Pages\Staff\StaffShipmentInfoController::displayPage
+staff_shipment_full_view:
+  path: /staff/shipment/{id}
+  controller: App\Controller\Pages\Staff\StaffShipmentInfoController::displayPage
 staff_auto_list:
   path: /staff/auto/list
   controller: App\Controller\Pages\Staff\AutoListController::displayPage
@@ -70,6 +70,16 @@ staff_auto_information:
 staff_courier_list:
   path: /staff/courier/list
   controller: App\Controller\Pages\Staff\CourierListController::displayPage
+staff_workshifts_list:
+  path: /staff/workshift/list
+  controller: App\Controller\Pages\Staff\WorkshiftListController::displayPage
+staff_workshift_add:
+  path: /staff/workshift/add
+  controller: App\Controller\Pages\Staff\WorkshiftAddController::displayPage
+staff_workshift_information:
+  path: /staff/workshift/{id}
+  controller: App\Controller\Pages\Staff\WorkshiftInformationController::displayPage
+
 #Ajax
 staff_incoming_shipments_group_list:
   path: /staff/shipments/ajax/list/incoming
@@ -88,12 +98,25 @@ status_codes_list:
   controller: App\Controller\Ajax\Staff\DeliveryStatusesAjaxController::getStatusCodes
 delivery_column_fields:
   path: /staff/deliveries/ajax/service/column-fields
-  controller: App\Controller\Ajax\Staff\DeliveriesAjaxController::getDeliveryFields
+  controller: App\Controller\Service\EntitiesFieldsController::getDeliveryFields
 add_delivery_status:
   path: /staff/deliveries/ajax/status/set
   controller: App\Controller\Ajax\Staff\DeliveryStatusesAjaxController::addDeliveryStatus
+auto_shortened_field_list:
+  path: /staff/auto/ajax/service/short-column-fields
+  controller: App\Controller\Service\EntitiesFieldsController::getAutoShortFields
+courier_field_list:
+  path: /staff/courier/ajax/service/column-fields
+  controller: App\Controller\Service\EntitiesFieldsController::getCouriersFields
+auto_available_list:
+  path: /staff/auto/ajax/list-available
+  controller: App\Controller\Ajax\Staff\AutosAjaxController::getAvailableList
+courier_available_list:
+  path: /staff/courier/ajax/list-available
+  controller: App\Controller\Ajax\Staff\CouriersAjaxController::getAvailableList
 
-## unused
-staff_outcoming_shipments_group_list:
-  path: /staff/shipments/ajax/list/outcoming
-  controller: App\Controller\StaffShipmentsGroupController::getShipmentGroups
+#Admin
+
+admin_auto_add:
+  path: /admin/auto/add
+  controller: App\Controller\Pages\Admin\AutoController::addPage

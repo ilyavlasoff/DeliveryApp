@@ -67,21 +67,4 @@ class DeliveriesAjaxController extends AbstractController
         return new JsonResponse(json_encode(["fields" => $fields, "content" => $content, "loadedCount" => $loadedCount, "totalCount" => $totalCount]));
     }
 
-    public function getDeliveryFields()
-    {
-        try {
-            $fields = $this->deliveryDBOperator->getDeliveryFields();
-            $remappedFields = [];
-            foreach ($fields as $field)
-            {
-                $readableFieldName = ucfirst(str_replace(['dep_', 'dest_', '_'], ['', '', ' '], $field));
-                $remappedFields[$field] = $readableFieldName;
-            }
-            return new JsonResponse(json_encode(['fields' => $remappedFields]));
-        }
-        catch (\Exception $ex)
-        {
-            return new JsonResponse(json_encode(['error' => $ex->getMessage()]));
-        }
-    }
 }

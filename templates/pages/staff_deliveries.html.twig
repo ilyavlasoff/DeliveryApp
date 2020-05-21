@@ -134,8 +134,8 @@
             let tableBody = $('#dataTableBody');
             checkedValues = [];
 
-            let headRow = $('<th></th>');
-            $("<td></td>")
+            let headRow = $('<tr></tr>');
+            $("<th></th>")
                 .append($("<input>", { type: 'checkbox', class: 'chb', id: 'selectAllCheckBox' }))
                 .appendTo(headRow);
             let fieldNames = [];

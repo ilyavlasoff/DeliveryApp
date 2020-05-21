@@ -1,0 +1,208 @@
+{% extends 'service_page_proto.html.twig' %}
+{% block pagecontent %}
+    <h3>Add workshift</h3>
+    {% set formErrors = workshiftAddForm.vars.errors.form.getErrors(true) %}
+    {% if formErrors|length %}
+        <div class="card-panel red lighten-1">
+            <label>Can not add workshift due to these errors:</label>
+            <ul>
+                {% for error in formErrors %}
+                    <li>{{ error.message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {{ form_start(workshiftAddForm) }}
+        <div class="input-field">
+            <label>{{ form_label(workshiftAddForm.startDate) }}</label>
+            {{ form_widget(workshiftAddForm.startDate, {'attr': { 'class': 'datepicker startDatePicker', 'id': 'startDate' }}) }}
+        </div>
+        <div class="input-field">
+            <label>{{ form_label(workshiftAddForm.startTime) }}</label>
+            {{ form_widget(workshiftAddForm.startTime, {'attr': { 'class': 'timepicker startTimePicker', 'id': 'startTime' }}) }}
+        </div>
+        <div class="input-field">
+            <label>{{ form_label(workshiftAddForm.endDate) }}</label>
+            {{ form_widget(workshiftAddForm.endDate, {'attr': { 'class': 'datepicker endDatePicker', 'id': 'endDate' }}) }}
+        </div>
+        <div class="input-field">
+            <label>{{ form_label(workshiftAddForm.endTime) }}</label>
+            {{ form_widget(workshiftAddForm.endTime, {'attr': { 'class': 'timepicker endTimePicker', 'id': 'endTime' }}) }}
+        </div>
+        <div class="input-field">
+            {{ form_widget(workshiftAddForm.autoNum, { 'attr': {'class': 'autoNumField', 'id': 'autoNum'}}) }}
+            {{ form_label(workshiftAddForm.autoNum) }}
+            <button id="workshiftPickerButton" class="btn" type="button">Choose</button>
+        </div>
+        <div class="input-field">
+            {{ form_widget(workshiftAddForm.courierId, { 'attr': {'class': 'courierIdField', 'id': 'courierId'}}) }}
+            {{ form_label(workshiftAddForm.courierId) }}
+            <button id="courierPickerButton" class="btn" type="button">Choose</button>
+        </div>
+        {{ form_row(workshiftAddForm.submit, {'attr': {'class': 'btn'}}) }}
+    {{ form_end(workshiftAddForm) }}
+
+    <!--Модальное окно-->
+
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Available auto</h4>
+            <table>
+                <thead id="autoTableHead"></thead>
+                <tbody id="autoTableContent"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <h4>Available couriers</h4>
+            <table>
+                <thead id="courierTableHead"></thead>
+                <tbody id="courierTableContent"></tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+        </div>
+    </div>
+
+{% endblock %}
+{% block javascripts %}
+    <script>
+
+        $(document).ready(function () {
+            $('.modal').modal();
+            $('.datepicker').datepicker();
+            $('.timepicker').timepicker();
+        });
+
+        function isDateTimeFieldsFilled()
+        {
+            return $('.startDatePicker').val() !== '' &&
+                    $('.endDatePicker').val() !== '' &&
+                    $('.startTimePicker').val() !== '' &&
+                    $('.endTimePicker').val() !== '';
+        }
+
+        $('#workshiftPickerButton').click(function ()
+        {
+            if(isDateTimeFieldsFilled())
+            {
+                $('#modal1').modal('open');
+                $('#autoTableHead').empty();
+                $('#autoTableContent').empty();
+                getFields("{{ path('auto_shortened_field_list') }}", $("#autoTableHead"));
+                getAutoData();
+            }
+        });
+
+        $('#courierPickerButton').click(function ()
+        {
+            if(isDateTimeFieldsFilled())
+            {
+                $('#modal2').modal('open');
+                $('#courierTableHead').empty();
+                $('#courierTableContent').empty();
+                getFields("{{ path('courier_field_list') }}", $("#courierTableHead"));
+                getCourierData();
+            }
+        });
+
+        function getAutoData()
+        {
+            let a = $('.courierIdField').val();
+            $.post(
+                "{{ path('auto_available_list') }}",
+                {
+                    'from': $('.startDatePicker').val() + $('.startTimePicker').val(),
+                    'to': $('.endDatePicker').val() + $('.endTimePicker').val(),
+                    'courierId': $('#courierIdField').val()
+                },
+                function(rawData, status) {
+                    let data = JSON.parse(rawData).resp;
+                    let content = $("#autoTableContent");
+                    for(let rowData in data)
+                    {
+                        let row = $('<tr></tr>');
+                        for(let item in data[rowData]) {
+                            $('<td></td>').append(data[rowData][item]).appendTo(row);
+                        }
+                        $('<td></td>')
+                            .append(
+                                $('<button></button>', {'class': 'btn chooseBtn', 'id': data[rowData]['number']})
+                                    .append('Choose')
+                            )
+                            .appendTo(row);
+                        content.append(row);
+                    }
+
+                    $('.chooseBtn').click(function () {
+                        let autoNumber = this.id;
+                        $('.autoNumField').val(autoNumber);
+                        $('#modal1').modal('close');
+                    })
+                },
+                'json'
+            )
+        }
+
+        function getFields(path, insertIn)
+        {
+            $.post(
+                path,
+                {},
+                function(rawData, status) {
+                    let data = JSON.parse(rawData);
+                    let headRow = $("<tr></tr>")
+                    for(let i=0; i!== data.length; ++i)
+                    {
+                        $('<th></th>').append(data[i]).appendTo(headRow);
+                    }
+                    insertIn.append(headRow);
+                }
+            )
+        }
+
+        function getCourierData()
+        {
+            $.post(
+                "{{ path('courier_available_list') }}",
+                {
+                    'from': $('.startDatePicker').val() +  $('.startTimePicker').val(),
+                    'to': $('.endDatePicker').val() +  $('.endTimePicker').val(),
+                    'autoNum': $('#autoNumField').val()
+                },
+                function (rawData, status)
+                {
+                    let data = JSON.parse(rawData).resp;
+                    let content = $("#courierTableContent");
+                    for(let rowData in data)
+                    {
+                        let row = $('<tr></tr>');
+                        for(let item in data[rowData]) {
+                            $('<td></td>').append(data[rowData][item]).appendTo(row);
+                        }
+                        $('<td></td>')
+                            .append(
+                                $('<button></button>', {'class': 'btn chooseBtn', 'id': data[rowData]['id']})
+                                    .append('Choose')
+                            )
+                            .appendTo(row);
+                        content.append(row);
+                    }
+
+                    $('.chooseBtn').click(function () {
+                        let courierId = this.id;
+                        $('.courierIdField').val(courierId);
+                        $('#modal2').modal('close');
+                    })
+                },
+                'json'
+            )
+        }
+    </script>
+{% endblock %}

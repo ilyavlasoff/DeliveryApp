@@ -1,4 +1,27 @@
 {% extends 'service_page_proto.html.twig' %}
 {% block pagecontent %}
+    <h3>Couriers</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Courier id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Warehouse</th>
+                <th>Driving category</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for courier in couriers %}
+            <tr>
+                <td>{{ courier.courierId }}</td>
+                <td>{{ courier.name }}</td>
+                <td>{{ courier.surname }}</td>
+                <td>{{ courier.warehouse }}</td>
+                <td>{{ courier.drivingCategory|join(', ') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
